@@ -7,6 +7,7 @@ DOCS_DIR="docs"
 
 rm -rf "$DOCS_DIR"
 mkdir -p "$DOCS_DIR"
+touch "$DOCS_DIR/.nojekyll"
 
 # notes/*.py を全部 export（出力先は docs/<filename>/）
 shopt -s nullglob
