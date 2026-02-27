@@ -244,6 +244,20 @@ def main() -> None:
     .card-title a:hover::after {{
       transform: scaleX(1);
     }}
+    .chips {{
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }}
+    .chip {{
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: #444;
+    }}
     .sidebar {{
       position: sticky;
       top: 78px;
@@ -415,6 +429,7 @@ function renderList(items) {{
   empty.style.display = "none";
 
   root.innerHTML = items.map(it => {{
+    const tags = (it.tags || []).map(t => `<span class="chip">#${{t}}</span>`).join("");
     const date = it.date ? it.date : "";
     return `
       <div class="card">
@@ -422,6 +437,7 @@ function renderList(items) {{
           <div class="card-date">${{date}}</div>
         </div>
         <div class="card-title"><a href="${{it.url}}">${{it.title}}</a></div>
+        <div class="chips">${{tags}}</div>
       </div>
     `;
   }}).join("");
