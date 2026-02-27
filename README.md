@@ -83,13 +83,3 @@ uv run marimo edit notes/<slug>.py
 bash scripts/build_docs.sh
 git add . && git commit -m "Update <slug>" && git push
 ```
-
-## 補足: `notes/zerodl1.py` について
-
-このファイルはサンプル記事として使っているため、以下のUI調整が入っています。
-
-- ヘッダー（タイトル下の日時・タグ表示）
-- `← トップページへ` ボタン
-- marimoの `hide_code` セルを見せないためのCSS
-
-同じ見た目を新規記事でも使いたい場合は、`scripts/new_note.py` のテンプレートを基準にしてください。
