@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Study Notes</title>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --panel: #ffffff;
+      --border: #e6e6e6;
+      --text: #111;
+      --muted: #666;
+      --shadow: 0 1px 2px rgba(0,0,0,.04);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      background: rgba(250,250,250,.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
+    }
+    .topbar-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px 16px;
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 750;
+      letter-spacing: .2px;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 16px 40px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    @media (max-width: 980px) {
+      .wrap { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .controls {
+      padding: 14px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .search {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 12px;
+      background: #fff;
+    }
+    .search input {
+      border: 0;
+      outline: none;
+      width: 100%;
+      font-size: 14px;
+      background: transparent;
+    }
+    .btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .btn:hover { background: #f5f5f5; }
+
+    .meta-row {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .pill {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: #333;
+    }
+
+    .list {
+      padding: 8px 14px 14px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #fff;
+      padding: 14px 16px;
+      margin: 12px 0;
+      box-shadow: var(--shadow);
+    }
+    .card:hover {
+      border-color: #dcdcdc;
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .card-date {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .card-title {
+      margin: 6px 0 10px;
+      font-size: 18px;
+      font-weight: 750;
+      line-height: 1.25;
+    }
+    .card a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .card-title a {
+      position: relative;
+      display: inline-block;
+      transition: color 180ms ease, transform 180ms ease;
+    }
+    .card-title a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 100%;
+      height: 2px;
+      background: #111;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 180ms ease;
+      opacity: 0.85;
+    }
+    .card-title a:hover {
+      color: #000;
+      transform: translateX(2px);
+    }
+    .card-title a:hover::after {
+      transform: scaleX(1);
+    }
+    .sidebar {
+      position: sticky;
+      top: 78px;
+    }
+    .sidebar .head {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .sidebar .head .h {
+      font-weight: 750;
+    }
+    .taglist {
+      padding: 10px;
+      padding-bottom: 22px;
+      max-height: calc(100vh - 180px);
+      overflow: auto;
+    }
+    .tagitem {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px 10px;
+      margin: 8px 0;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      font-size: 13px;
+    }
+    .tagitem:hover { background: #f6f6f6; }
+    .tagitem.active {
+      background: #f0f0f0;
+      border-color: #cfcfcf;
+      font-weight: 650;
+    }
+    .count {
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .empty {
+      padding: 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="title">ctake099 Blog</div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <main class="panel">
+      <div class="controls">
+        <div class="search-row">
+          <div class="search" aria-label="search">
+            <span style="color:#888;">🔎</span>
+            <input id="q" type="text" placeholder="検索（タイトル / タグ）…  Enterで確定" />
+          </div>
+          <button id="clear" class="btn" type="button">クリア</button>
+        </div>
+        <div class="meta-row">
+          <span id="active" class="pill">すべて表示</span>
+          <span id="found" class="pill">0件</span>
+        </div>
+      </div>
+
+      <div id="list" class="list"></div>
+      <div id="empty" class="empty" style="display:none;">該当するノートがありません。</div>
+    </main>
+
+    <aside class="panel sidebar">
+      <div class="head">
+        <div class="h">Tags</div>
+        <div class="count" id="tagTotal"></div>
+      </div>
+      <div class="taglist" id="taglist"></div>
+    </aside>
+  </div>
+
+<script>
+const ITEMS = [{"slug": "viz-matplotlib", "title": "Matplotlibで可視化メモ", "date": "2026-02-27", "tags": ["visualization", "matplotlib"], "status": "public", "url": "viz-matplotlib/index.html"}, {"slug": "zerodl1", "title": "ゼロつく1を実装", "date": "2026-01-17", "tags": ["book", "ゼロつく1"], "status": "public", "url": "zerodl1/index.html"}];
+
+let activeTag = null;
+let query = "";
+
+function norm(s) {
+  return (s || "").toString().trim().toLowerCase();
+}
+
+function tagCounts(items) {
+  const m = new Map();
+  for (const it of items) {
+    for (const t of it.tags || []) {
+      m.set(t, (m.get(t) || 0) + 1);
+    }
+  }
+  return Array.from(m.entries())
+    .map(([tag, count]) => ({ tag, count }))
+    .sort((a,b) => b.count - a.count || a.tag.localeCompare(b.tag, 'ja'));
+}
+
+function matches(it) {
+  const q = norm(query);
+  if (!q) return true;
+  const hay = norm(it.title) + " " + norm((it.tags || []).join(" "));
+  return hay.includes(q);
+}
+
+function applyFilters() {
+  let xs = ITEMS.filter(matches);
+  if (activeTag) xs = xs.filter(it => (it.tags || []).includes(activeTag));
+  return xs;
+}
+
+function renderTagList() {
+  const root = document.getElementById("taglist");
+  const tags = tagCounts(ITEMS);
+
+  document.getElementById("tagTotal").textContent = `${tags.length} tags`;
+
+  root.innerHTML = "";
+
+  const allBtn = document.createElement("button");
+  allBtn.type = "button";
+  allBtn.className = "tagitem" + (activeTag === null ? " active" : "");
+  allBtn.innerHTML = `<span>すべて</span><span class="count">${ITEMS.length}</span>`;
+  allBtn.onclick = () => {
+    activeTag = null;
+    render();
+  };
+  root.appendChild(allBtn);
+
+  for (const t of tags) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tagitem" + (activeTag === t.tag ? " active" : "");
+    btn.innerHTML = `<span>${t.tag}</span><span class="count">${t.count}</span>`;
+    btn.onclick = () => {
+      activeTag = (activeTag === t.tag ? null : t.tag);
+      render();
+    };
+    root.appendChild(btn);
+  }
+}
+
+function setText(id, text) {
+  document.getElementById(id).textContent = text;
+}
+
+function renderList(items) {
+  const root = document.getElementById("list");
+  const empty = document.getElementById("empty");
+
+  if (!items.length) {
+    root.innerHTML = "";
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+
+  root.innerHTML = items.map(it => {
+    const date = it.date ? it.date : "";
+    return `
+      <div class="card">
+        <div class="card-top">
+          <div class="card-date">${date}</div>
+        </div>
+        <div class="card-title"><a href="${it.url}">${it.title}</a></div>
+      </div>
+    `;
+  }).join("");
+}
+
+function render() {
+  const filtered = applyFilters();
+
+  const q = query.trim();
+  const activeLabel =
+    (activeTag ? `タグ: ${activeTag}` : "すべて表示") +
+    (q ? ` / 検索: "${q}"` : "");
+
+  setText("active", activeLabel);
+  setText("found", `${filtered.length}件`);
+
+  renderTagList();
+  renderList(filtered);
+}
+
+document.getElementById("q").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    query = e.currentTarget.value;
+    render();
+  }
+});
+
+document.getElementById("clear").addEventListener("click", () => {
+  query = "";
+  activeTag = null;
+  document.getElementById("q").value = "";
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
